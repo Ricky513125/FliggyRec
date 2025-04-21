@@ -4,16 +4,16 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 
 # 加载数据
-history = pd.read_csv('data/user_item_behavior_history.csv', header=None, names=['user_id', 'item_id', 'action_id', 'timestamp'], parse_dates=False)
+# history = pd.read_csv('data/user_item_behavior_history.csv', header=None, names=['user_id', 'item_id', 'action_id', 'timestamp'], parse_dates=False)
 # print("原始时间戳数据类型:", type(history['timestamp'].iloc[0]))
 # exit
 users = pd.read_csv('data/user_profile.csv', header=None, names=['user_id', 'age', 'gender_id', 'job_id', 'city_id', 'label'])
 items = pd.read_csv('data/item_profile.csv', header=None, names=['item_id', 'category_id', 'city_id', 'label'])
 
-print(history.isnull.sum().sum())
-print(users.isnull.sum().sum())
-print(items.isnull.sum().sum())
-exit
+# print(history.isnull.sum().sum())
+# print(users.isnull().sum())
+# print(items.isnull().sum())
+# exit
 # 1. 检查user_id一致性
 def check_user_consistency(history, users):
     """检查history中的user是否都在user表中"""
@@ -51,3 +51,4 @@ clean_history = history[~history['user_id'].isin(orphan_users) & ~history['item_
         ].copy()
 
 clean_history.to_csv('data/cleaned_history.csv', index=False)
+print("Successfully clean the dataset!")
