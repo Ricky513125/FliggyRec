@@ -20,7 +20,7 @@ def convert_timestamp(ts):
 # 定义有效时间范围（根据业务需求调整）
 valid_start = pd.Timestamp('2019-06-03 00:00:00')
 valid_end = pd.Timestamp('2021-06-03 23:59:59')
-print(type(histor['timestamp']))
+print(type(history['timestamp']))
 for i in range(10):
     print("history", history['timestamp'].iloc[i], history['timestamp'].iloc(i) > valid_start)
 # 识别异常记录
