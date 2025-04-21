@@ -1,18 +1,84 @@
 import pandas as pd
 from datetime import datetime
+from sklearn.model_selection import train_test_split
+import numpy as np
 
 # 加载数据
 history = pd.read_csv('data/user_item_behavior_history.csv', header=None, names=['user_id', 'item_id', 'action_id', 'timestamp'], parse_dates=['timestamp'])
 users = pd.read_csv('data/user_profile.csv', header=None, names=['user_id', 'age', 'gender_id', 'job_id', 'city_id', 'label'])
 items = pd.read_csv('data/item_profile.csv', header=None, names=['item_id', 'category_id', 'city_id', 'label'])
 # label 为 -1 或者435;320
-print("history")
-print(history.head())
-# print(history.columns)
-print("users")
-# print(users.columns)
-print("items")
-# print(items.columns)
-print(items.head(50))
-# 确保交互数据按时间排序
+# print("history")
+# print(history.head())
+# # print(history.columns)
+# print("users")
+# # print(users.columns)
+# print("items")
+# # print(items.columns)
+# print(items.head(50))
+# # 确保交互数据按时间排序
 # interactions = interactions.sort_values(by=['user_id', 'timestamp'])
+
+
+# 划分常规训练/测试集（时间敏感型划分）
+history['timestamp'] = pd.to_datetime(history['timestamp'])
+history = history.sort_values('timestamp')
+
+# 按时间划分（保留最后20%作为常规测试集）
+split_time = history['timestamp'].quantile(0.8)
+train_history = history[history['timestamp'] < split_time]
+test_history = history[history['timestamp'] >= split_time]
+
+# 确保用户和物品在训练集中出现过
+test_history = test_history[
+    test_history['user_id'].isin(train_history['user_id']) &
+    test_history['item_id'].isin(train_history['item_id'])
+]
+
+# 用户冷启动测试集
+# 获取训练集中未出现过的用户
+all_users = set(users['user_id'])
+train_users = set(train_history['user_id'])
+cold_users = list(all_users - train_users)
+
+# 构建用户冷启动测试集
+user_cold_test = history[
+    history['user_id'].isin(cold_users) &
+    history['timestamp'] >= split_time  # 确保时间一致性
+]
+
+# 获取训练集中未出现过的物品
+all_items = set(items['item_id'])
+train_items = set(train_history['item_id'])
+cold_items = list(all_items - train_items)
+
+# 构建物品冷启动测试集
+item_cold_test = history[
+    history['item_id'].isin(cold_items) &
+    history['timestamp'] >= split_time
+]
+
+# 同时包含新用户和新物品的测试集
+mixed_cold_test = history[
+    (history['user_id'].isin(cold_users) |
+     history['item_id'].isin(cold_items)) &
+    (history['timestamp'] >= split_time)
+]
+
+def print_stats(df, name):
+    print(f"{name}统计:")
+    print(f"- 用户数: {df['user_id'].nunique()}")
+    print(f"- 物品数: {df['item_id'].nunique()}")
+    print(f"- 记录数: {len(df)}\n")
+
+print_stats(train_history, "常规训练集")
+print_stats(test_history, "常规测试集")
+print_stats(user_cold_test, "用户冷启动测试集")
+print_stats(item_cold_test, "物品冷启动测试集")
+print_stats(mixed_cold_test, "混合冷启动测试集")
+
+train_history.to_csv('data/train_regular.csv', index=False)
+test_history.to_csv('data/test_regular.csv', index=False)
+user_cold_test.to_csv('data/test_user_cold.csv', index=False)
+item_cold_test.to_csv('data/test_item_cold.csv', index=False)
+mixed_cold_test.to_csv('data/test_mixed_cold.csv', index=False)
