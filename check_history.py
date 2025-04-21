@@ -20,12 +20,14 @@ def convert_timestamp(ts):
 # 定义有效时间范围（根据业务需求调整）
 valid_start = pd.Timestamp('2019-06-03 00:00:00')
 valid_end = pd.Timestamp('2021-06-03 23:59:59')
+print(type(histor['timestamp']))
 for i in range(10):
-    print("history", history['timestamp'].iloc(i), history['timestamp'].iloc(i) > valid_start)
+    print("history", history['timestamp'].iloc[i], history['timestamp'].iloc(i) > valid_start)
 # 识别异常记录
 out_of_range = ~history['timestamp'].between(valid_start, valid_end)
 anomaly_count = out_of_range.sum()
 print(f"发现异常时间记录: {anomaly_count}条 ({anomaly_count/len(history):.2%})")
+exit
 cleaned_history = history[history['timestamp'].between(valid_start, valid_end)]
-clean_history.to_csv('data/cleaned_history2.csv', index=False)
+cleaned_history.to_csv('data/cleaned_history2.csv', index=False)
 print("Successfully clean the history dataset!")
