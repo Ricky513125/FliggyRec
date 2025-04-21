@@ -2,9 +2,9 @@ import pandas as pd
 from datetime import datetime
 
 # 加载数据
-history = pd.read_csv('data/user_item_behavior_history.csv')
+history = pd.read_csv('data/user_item_behavior_history.csv', header=None, names=['user_id', 'item_id', 'action_id', 'timestamp'], parse_dates=['timestamp'])
 users = pd.read_csv('data/user_profile.csv', header=None, names=['user_id', 'age', 'gender_id', 'job_id', 'city_id', 'label'])
-items = pd.read_csv('data/item_profile.csv', header=None, names=['good_id', 'category_id', 'city_id', 'label'])
+items = pd.read_csv('data/item_profile.csv', header=None, names=['item_id', 'category_id', 'city_id', 'label'])
 # label 为 -1 或者435;320
 print("history")
 print(history.head())
