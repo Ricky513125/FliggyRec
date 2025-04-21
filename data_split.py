@@ -4,7 +4,7 @@ from sklearn.model_selection import train_test_split
 import numpy as np
 
 # 加载数据
-history = pd.read_csv('data/cleaned_history2.csv', header=None, names=['user_id', 'item_id', 'action_id', 'timestamp'], parse_dates=False)
+history = pd.read_csv('data/cleaned_history2.csv', header=None, names=['user_id', 'item_id', 'action_id', 'timestamp'])
 # print("原始时间戳数据类型:", type(history['timestamp'].iloc[0]))
 # exit
 users = pd.read_csv('data/user_profile.csv', header=None, names=['user_id', 'age', 'gender_id', 'job_id', 'city_id', 'label'])
@@ -36,7 +36,7 @@ def convert_timestamp(ts):
 
 # 划分常规训练/测试集（时间敏感型划分）
 # history['timestamp'] = pd.to_datetime(history['timestamp'], unit='s')  # 关键参数unit='s'
-history['timestamp'] = convert_timestamp(history['timestamp'])
+# history['timestamp'] = convert_timestamp(history['timestamp'])
 
 # 3. 验证转换结果
 print("时间戳示例（前5行）:")
