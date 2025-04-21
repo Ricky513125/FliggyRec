@@ -3,7 +3,10 @@ import numpy as np
 
 history = pd.read_csv('data/user_item_behavior_history.csv', header=None, names=['user_id', 'item_id', 'action_id', 'timestamp'], parse_dates=False)
 # 假设数据已加载
-history['timestamp'] = pd.to_datetime(history['timestamp'])
+# 毫秒级转换（假设确认是13位时间戳）
+history['timestamp'] = pd.to_datetime(history['timestamp'], unit='ms')
+
+# history['timestamp'] = pd.to_datetime(history['timestamp'])
 
 
 def convert_timestamp(ts):
@@ -27,7 +30,12 @@ for i in range(10):
 out_of_range = ~history['timestamp'].between(valid_start, valid_end)
 anomaly_count = out_of_range.sum()
 print(f"发现异常时间记录: {anomaly_count}条 ({anomaly_count/len(history):.2%})")
-exit
-cleaned_history = history[history['timestamp'].between(valid_start, valid_end)]
-cleaned_history.to_csv('data/cleaned_history2.csv', index=False)
-print("Successfully clean the history dataset!")
+
+action_abnormal = ~history['action_d'].isin(['clk', 'fav', 'cart', 'pay'])
+
+
+
+
+# cleaned_history = history[history['timestamp'].between(valid_start, valid_end)]
+# cleaned_history.to_csv('data/cleaned_history2.csv', index=False)
+# print("Successfully clean the history dataset!")
