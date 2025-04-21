@@ -42,3 +42,9 @@ print(f"异常用户数量: {len(orphan_users)}")
 print(f"异常物品数量: {len(orphan_items)}")
 print(f"前10个异常用户: {list(orphan_users)[:10]}")
 print(f"前10个异常物品: {list(orphan_items)[:10]}")
+
+clean_history = history[~history['user_id'].isin(orphan_users) & ~history['item_id'].isin(orphan_items)
+
+        ].copy()
+
+clean_history.to_csv('data/cleaned_history.csv', index=False)
