@@ -21,7 +21,7 @@ items = pd.read_csv('data/item_profile.csv', header=None, names=['item_id', 'cat
 
 
 # 划分常规训练/测试集（时间敏感型划分）
-history['timestamp'] = pd.to_datetime(history['timestamp'])
+history['timestamp'] = pd.to_datetime(history['timestamp'], unit='s')  # 关键参数unit='s'
 history = history.sort_values('timestamp')
 
 # 按时间划分（保留最后20%作为常规测试集）
