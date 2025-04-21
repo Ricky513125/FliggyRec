@@ -10,7 +10,10 @@ history = pd.read_csv('data/user_item_behavior_history.csv', header=None, names=
 users = pd.read_csv('data/user_profile.csv', header=None, names=['user_id', 'age', 'gender_id', 'job_id', 'city_id', 'label'])
 items = pd.read_csv('data/item_profile.csv', header=None, names=['item_id', 'category_id', 'city_id', 'label'])
 
-
+print(history.isnull.sum().sum())
+print(users.isnull.sum().sum())
+print(items.isnull.sum().sum())
+exit
 # 1. 检查user_id一致性
 def check_user_consistency(history, users):
     """检查history中的user是否都在user表中"""
