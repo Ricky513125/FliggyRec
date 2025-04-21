@@ -59,41 +59,26 @@ split_time = history['timestamp'].quantile(0.8)
 train_history = history[history['timestamp'] < split_time]
 test_history = history[history['timestamp'] >= split_time]
 
-# 确保用户和物品在训练集中出现过
-test_history = test_history[
-    test_history['user_id'].isin(train_history['user_id']) &
-    test_history['item_id'].isin(train_history['item_id'])
-]
+# 3. 冷启动测试集构建（修正版）
+def get_cold_entities(full_data, train_data, entity_col):
+    """获取训练集中未出现过的实体ID"""
+    train_entities = set(train_data[entity_col].unique())
+    return set(full_data[entity_col].unique()) - train_entities
 
-# 用户冷启动测试集
-# 获取训练集中未出现过的用户
-all_users = set(users['user_id'])
-train_users = set(train_history['user_id'])
-cold_users = list(all_users - train_users)
+# 获取冷启动用户和物品
+cold_users = get_cold_entities(users, train_history, 'user_id')
+cold_items = get_cold_entities(items, train_history, 'item_id')
 
-# 构建用户冷启动测试集
-user_cold_test = history[
-    history['user_id'].isin(cold_users) &
-    history['timestamp'] >= split_time  # 确保时间一致性
-]
+# 构建冷启动测试集（使用安全的布尔索引）
+user_cold_mask = test_history['user_id'].isin(cold_users)
+item_cold_mask = test_history['item_id'].isin(cold_items)
 
-# 获取训练集中未出现过的物品
-all_items = set(items['item_id'])
-train_items = set(train_history['item_id'])
-cold_items = list(all_items - train_items)
+user_cold_test = test_history[user_cold_mask]
+item_cold_test = test_history[item_cold_mask]
+mixed_cold_test = test_history[user_cold_mask | item_cold_mask]
 
-# 构建物品冷启动测试集
-item_cold_test = history[
-    history['item_id'].isin(cold_items) &
-    history['timestamp'] >= split_time
-]
-
-# 同时包含新用户和新物品的测试集
-mixed_cold_test = history[
-    (history['user_id'].isin(cold_users) |
-     history['item_id'].isin(cold_items)) &
-    (history['timestamp'] >= split_time)
-]
+# 4. 常规测试集（排除冷启动样本）
+test_history = test_history[~(user_cold_mask | item_cold_mask)]
 
 def print_stats(df, name):
     print(f"{name}统计:")
