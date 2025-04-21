@@ -51,7 +51,7 @@ if history['timestamp'].isnull().any():
 
 
 
-
+history['timestamp'] = pd.to_datetime(history['timestamp'])
 history = history.sort_values('timestamp')
 
 # 按时间划分（保留最后20%作为常规测试集）
