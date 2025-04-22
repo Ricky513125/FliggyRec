@@ -73,6 +73,7 @@ class RecDatasetWithNegative(Dataset):
             'user_id': torch.LongTensor(batch_user),
             'gender_id': torch.LongTensor([self.users.loc[user_id, 'gender_id']] * (1 + self.neg_ratio)),
             'job_id': torch.LongTensor([self.users.loc[user_id, 'job_id']]),  # 新增job_id
+            'city_id': torch.LongTensor([self.users.loc[user_id, 'city_id']] * self.neg_ratio),
             # 'age_bucket': torch.LongTensor([self.users.loc[user_id, 'age_bucket']] * (1 + self.neg_ratio)),
             'age_bucket': torch.LongTensor([age_bucket] * (1 + self.neg_ratio)),
             # 'label_list': [self.users.loc[user_id, 'label_list']] * (1 + self.neg_ratio),  # 保持为列表
