@@ -71,7 +71,7 @@ class RecommenderModel(nn.Module):
         print('age_emb', self.age_emb.weight.shape)
         print('item_id_emb', self.item_id_emb.weight.shape)
         print('category_emb', self.category_emb.weight.shape)
-        print('label_embed', self.label_emb.weight.shape)
+        print('label_embed', self.label_embed.weight.shape)
         print('dynamic_pool', self.dynamic_pool.weight.shape)
 
 
