@@ -23,7 +23,8 @@ def dynamic_collate_fn(batch):
         'user_id': torch.cat([x['user_id'] for x in user_batch]).to(device),
         'gender_id': torch.cat([x['gender_id'] for x in user_batch]).to(device),
         'age_bucket': torch.cat([x['age_bucket'] for x in user_batch]).to(device),
-        'label_list': [label.to(device) for x in user_batch for label in x['label_list']],  # 展平+设备转移
+        # 'label_list': [label.to(device) for x in user_batch for label in x['label_list']],  # 展平+设备转移
+        'label_list': torch.cat([x['label_list'] for x in user_batch]).to(device),  # 直接concat
         'label_length': torch.cat([x['label_length'] for x in user_batch]).to(device)
     }
 
@@ -31,7 +32,8 @@ def dynamic_collate_fn(batch):
     item_data = {
         'item_id': torch.cat([x['item_id'] for x in item_batch]).to(device),
         'category_id': torch.cat([x['category_id'] for x in item_batch]).to(device),
-        'label_list': [label.to(device) for x in item_batch for label in x['label_list']],
+        # 'label_list': [label.to(device) for x in item_batch for label in x['label_list']],
+        'label_list': torch.cat([x['label_list'] for x in item_batch]).to(device),
         'label_length': torch.cat([x['label_length'] for x in item_batch]).to(device)
     }
 

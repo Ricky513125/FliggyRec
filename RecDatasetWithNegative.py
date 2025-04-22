@@ -58,14 +58,16 @@ class RecDatasetWithNegative(Dataset):
             'gender_id': torch.LongTensor([self.users.loc[user_id, 'gender_id']] * (1 + self.neg_ratio)),
             # 'age_bucket': torch.LongTensor([self.users.loc[user_id, 'age_bucket']] * (1 + self.neg_ratio)),
             'age_bucket': torch.LongTensor([age_bucket] * (1 + self.neg_ratio)),
-            'label_list': [self.users.loc[user_id, 'label_list']] * (1 + self.neg_ratio),  # 保持为列表
+            # 'label_list': [self.users.loc[user_id, 'label_list']] * (1 + self.neg_ratio),  # 保持为列表
+            'label_list': torch.LongTensor(self.users.loc[user_id, 'label_list']),  # 关键修改：转为Tensor
             'label_length': torch.LongTensor([len(self.users.loc[user_id, 'label_list'])] * (1 + self.neg_ratio)) # 动态平均池化
         }
 
         item_data = {
             'item_id': torch.LongTensor(batch_item),
             'category_id': torch.LongTensor([self.items.loc[i, 'category_id'] for i in batch_item]),
-            'label_list': [self.items.loc[i, 'label_list'] for i in batch_item],  # 保持为列表
+            # 'label_list': [self.items.loc[i, 'label_list'] for i in batch_item],  # 保持为列表
+            'label_list': torch.LongTensor(self.items.loc[item_id, 'label_list']),  # 关键修改：转为Tensor
             'label_length': torch.LongTensor([len(self.items.loc[i, 'label_list']) for i in batch_item]) # 动态平均池化
         }
 

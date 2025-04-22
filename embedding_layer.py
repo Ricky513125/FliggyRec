@@ -81,7 +81,8 @@ class RecommenderModel(nn.Module):
         u_city = self.city_emb(user_data['city_id'])
         u_age = self.age_emb(user_data['age_bucket'])
         # u_labels = self.label_emb(user_data['label_list'])
-        user_labels = torch.cat([torch.LongTensor(x).to(device) for x in user_data['label_list']])
+        # user_labels = torch.cat([torch.LongTensor(x).to(device) for x in user_data['label_list']])
+        user_labels = user_data['label_list']  # 已经是拼接好的Tensor
         user_label_emb = self.label_embed(user_labels)
         u_labels_pooled = self.dynamic_pool(user_label_emb, user_data['label_length'])
 
@@ -94,6 +95,19 @@ class RecommenderModel(nn.Module):
         item_labels = torch.cat([torch.LongTensor(x).to(device) for x in item_data['label_list']])
         item_label_emb = self.label_embed(item_labels)
         i_labels_pooled = self.dynamic_pool(item_label_emb, item_data['label_length'])
+
+        # # 分段处理（根据label_length）
+        # user_pooled = []
+        # start = 0
+        # for length in user_data['label_length']:
+        #     end = start + length
+        #     segment = user_label_emb[start:end]
+        #     weights = self.weight_net(segment)
+        #     user_pooled.append(torch.sum(segment * weights, dim=0))
+        #     start = end
+        #
+        # user_label_feat = torch.stack(user_pooled)
+
 
         # 合并其他特征
         # u_emb = torch.cat([
