@@ -87,7 +87,9 @@ class RecommenderModel(nn.Module):
         )
 
     def forward(self, user_data, item_data):
-
+        print('user_data', user_data)
+        print('item_data', item_data)
+        assert 1 == 0
         # job_id 验证
         # 在模型forward开头添加
         # print("job_id取值范围：", user_data['job_id'].min(), user_data['job_id'].max())
@@ -104,7 +106,7 @@ class RecommenderModel(nn.Module):
         # print('current_dynamic_pool', self.dynamic_pool.weight.shape)
 
         # 用户特征处理
-        print('user_data', user_data)
+
         print('current_user_id', user_data['user_id'])
         u_id = self.user_id_emb(user_data['user_id'])
         print('current_gender', user_data['gender_id'])
