@@ -1,6 +1,24 @@
 import torch
 import torch.nn as nn
 from collections import defaultdict
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+
+
+# ----------------- 修正1：独立损失函数 -----------------
+def weighted_bce_loss(outputs, targets, weights=None):
+    """
+    独立定义的加权损失函数
+    Args:
+        outputs: 模型预测值 (batch_size,)
+        targets: 真实标签 (batch_size,)
+        weights: 样本权重 (batch_size,)
+    """
+    if weights is not None:
+        loss = weights * (targets * torch.log(outputs) + (1 - targets) * torch.log(1 - outputs))
+    else:
+        loss = targets * torch.log(outputs) + (1 - targets) * torch.log(1 - outputs)
+    return -torch.mean(loss)
 
 
 class MultiLabelEmbedding(nn.Module):
@@ -75,3 +93,53 @@ class RecommenderModel(nn.Module):
         item_vec = self.item_tower(item_feat)
 
         return torch.sigmoid((user_vec * item_vec).sum(dim=1))
+
+
+# # ----------------- 修正2：独立训练函数 -----------------
+# def train_epoch(model, dataloader, optimizer, device):
+#     """
+#     独立定义的训练函数
+#     Args:
+#         model: 模型实例
+#         dataloader: 数据加载器
+#         optimizer: 优化器
+#         device: 计算设备
+#     """
+#     model.train()
+#     total_loss = 0
+#
+#     for user_data, item_data, labels in dataloader:
+#         # ----------------- 修正3：正确的设备转移 -----------------
+#         # 处理用户数据
+#         user_batch = {
+#             'user_id': user_data['user_id'].to(device),
+#             'gender_id': user_data['gender_id'].to(device),
+#             'age_bucket': user_data['age_bucket'].to(device),
+#             'label_list': user_data['label_list']  # 列表类型不转移设备
+#         }
+#
+#         # 处理物品数据
+#         item_batch = {
+#             'item_id': item_data['item_id'].to(device),
+#             'category_id': item_data['category_id'].to(device),
+#             'label_list': item_data['label_list']  # 列表类型不转移设备
+#         }
+#
+#         labels = labels.to(device).float()  # 确保标签是浮点型
+#
+#         # 梯度清零
+#         optimizer.zero_grad()
+#
+#         # 前向传播
+#         outputs = model(user_batch, item_batch)
+#
+#         # 计算损失
+#         loss = weighted_bce_loss(outputs.squeeze(), labels)
+#
+#         # 反向传播
+#         loss.backward()
+#         optimizer.step()
+#
+#         total_loss += loss.item()
+#
+#     return total_loss / len(dataloader)
