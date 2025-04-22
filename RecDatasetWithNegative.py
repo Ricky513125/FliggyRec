@@ -10,10 +10,12 @@ class RecDatasetWithNegative(Dataset):
 
     def __len__(self):
         """返回数据集的总长度（正样本数 × (1 + 负样本比例)）"""
-        return len(self.interactions) * (1 + self.neg_ratio)
+        # return len(self.interactions) * (1 + self.neg_ratio)
+        return len(self.interactions)
 
     def __getitem__(self, idx):
         # 正样本
+        # pos_idx = idx // (1 + self.neg_ratio)
         pos_row = self.interactions.iloc[idx]
         user_id = pos_row['user_id']
 
@@ -24,6 +26,8 @@ class RecDatasetWithNegative(Dataset):
             size=self.neg_ratio,
             replace=False
         )
+
+
 
         # 构建批次
         batch_user = []
