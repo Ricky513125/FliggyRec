@@ -9,6 +9,9 @@ items = pd.read_csv("data/item_profile.csv")
 def parse_labels(label_str):
     if label_str == '-1':
         # 没有标签
-
+        return []
     return [int(x) for x in label_str.split(';')]
+
+users['label'] = users['label'].apply(parse_labels)
+items['label'] = items['label'].apply(parse_labels)
 
