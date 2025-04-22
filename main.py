@@ -58,7 +58,7 @@ items['item_id'] = items['item_id'].astype(int)
 items['category_id'] = items['category_id'].astype(int)
 items['city_id'] = items['city_id'].astype(int)
 interactions['item_id'] = interactions['item_id'].astype(int)
-interactions['category_id'] = interactions['category_id'].astype(int)
+interactions['user_id'] = interactions['user_id'].astype(int)
 
 
 
