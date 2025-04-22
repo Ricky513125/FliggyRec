@@ -12,8 +12,8 @@ from tqdm import tqdm  # 导入进度条库
 # 设备设置
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-users = pd.read_csv('data/user_profile.csv')
-items = pd.read_csv('data/item_profile.csv')
+users = pd.read_csv('data/user_profile.csv', header=None, names=['user_id', 'age', 'gender_id', 'job_id', 'city_id', 'label'])
+items = pd.read_csv('data/item_profile.csv', header=None, names=['item_id', 'category_id', 'city_id', 'label'])
 interactions = pd.read_csv('data/interactions.csv')
 
 ACTION_WEIGHTS = {
