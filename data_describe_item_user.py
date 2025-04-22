@@ -29,4 +29,4 @@ def get_column_stats(df, name):
 user_stats = get_column_stats(users, 'users')
 item_stats = get_column_stats(items, 'items')
 
-pd.concat([user_stats, item_stats], axis=0)
+print(pd.concat([user_stats, item_stats], axis=0))
