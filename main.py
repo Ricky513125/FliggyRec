@@ -7,6 +7,7 @@ from embedding_layer import RecommenderModel
 from RecDatasetWithNegative import RecDatasetWithNegative
 # import embedding_layer
 import os
+from tqdm import tqdm  # 导入进度条库
 
 # 设备设置
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -72,6 +73,9 @@ def weighted_bce_loss(outputs, targets, weights=None):
         targets: 真实标签 (batch_size,)
         weights: 样本权重 (batch_size,)
     """
+    epsilon = 1e-7  # 防止log(0)
+    outputs = torch.clamp(outputs, epsilon, 1. - epsilon)
+
     if weights is not None:
         loss = weights * (targets * torch.log(outputs) + (1 - targets) * torch.log(1 - outputs))
     else:
@@ -91,6 +95,12 @@ def train_epoch(model, dataloader, optimizer, device):
     """
     model.train()
     total_loss = 0
+
+    # 添加进度条
+    progress_bar = tqdm(enumerate(dataloader),
+                        total=len(dataloader),
+                        desc=f'Epoch {epoch + 1}',
+                        ncols=100)
 
     for user_data, item_data, labels in dataloader:
         # ----------------- 修正3：正确的设备转移 -----------------
@@ -126,10 +136,13 @@ def train_epoch(model, dataloader, optimizer, device):
 
         total_loss += loss.item()
 
+        # 更新进度条信息
+        progress_bar.set_postfix(loss=f'{loss.item():.4f}')
+
     return total_loss / len(dataloader)
 
 # 训练循环
-for epoch in range(10):
+for epoch in tqdm(range(10), desc='Total Training Progress', ncols=100):
     avg_loss = train_epoch(model, dataloader, optimizer, device)
     print(f"Epoch {epoch + 1}, Loss: {avg_loss:.4f}")
 
