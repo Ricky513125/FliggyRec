@@ -111,6 +111,7 @@ class RecommenderModel(nn.Module):
         print(f"user_id嵌入层尺寸: {self.user_id_emb.num_embeddings}")
 
         print(f"use_data.shape: {user_data['user_id'].shape}")
+        assert 1==0
         print('current_user_id', user_data['user_id'])
         u_id = self.user_id_emb(user_data['user_id'])
         print('current_gender', user_data['gender_id'])
