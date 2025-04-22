@@ -112,6 +112,8 @@ item_feat_sizes = {
 # 初始化
 # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = RecommenderModel(user_feat_sizes, item_feat_sizes, label_vocab_size).to(device)
+print("模型job_emb大小:", model.job_emb.num_embeddings)
+print("")
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # 数据加载（带负采样）

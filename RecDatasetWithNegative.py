@@ -69,25 +69,46 @@ class RecDatasetWithNegative(Dataset):
             age_bucket = 0  # 设置默认值
 
         # 组装数据
+        # user_data = {
+        #     'user_id': torch.LongTensor(batch_user),
+        #     'gender_id': torch.LongTensor([self.users.loc[user_id, 'gender_id']] * (1 + self.neg_ratio)),
+        #     'job_id': torch.LongTensor([self.users.loc[user_id, 'job_id']]),  # 新增job_id
+        #     'city_id': torch.LongTensor([self.users.loc[user_id, 'city_id']] * self.neg_ratio),
+        #     # 'age_bucket': torch.LongTensor([self.users.loc[user_id, 'age_bucket']] * (1 + self.neg_ratio)),
+        #     'age_bucket': torch.LongTensor([age_bucket] * (1 + self.neg_ratio)),
+        #     # 'label_list': [self.users.loc[user_id, 'label_list']] * (1 + self.neg_ratio),  # 保持为列表
+        #     'label_list': torch.LongTensor(self.users.loc[user_id, 'label_list']),  # 关键修改：转为Tensor
+        #     'label_length': torch.LongTensor([len(self.users.loc[user_id, 'label_list'])] * (1 + self.neg_ratio)) # 动态平均池化
+        # }
+
+        # item_data = {
+        #     'item_id': torch.LongTensor(batch_item),
+        #     'category_id': torch.LongTensor([self.items.loc[i, 'category_id'] for i in batch_item]),
+        #     # 'label_list': [self.items.loc[i, 'label_list'] for i in batch_item],  # 保持为列表
+        #     'city_id': torch.LongTensor([self.items.loc[i, 'city_id'] for i in batch_item]),
+        #     'label_list': torch.LongTensor(self.items.loc[item_id, 'label_list']),  # 关键修改：转为Tensor
+        #     'label_length': torch.LongTensor([len(self.items.loc[i, 'label_list']) for i in batch_item]) # 动态平均池化
+        # }
+
         user_data = {
-            'user_id': torch.LongTensor(batch_user),
+            'user_id': torch.LongTensor(batch_user),  # 形状 [1+neg_ratio]
             'gender_id': torch.LongTensor([self.users.loc[user_id, 'gender_id']] * (1 + self.neg_ratio)),
-            'job_id': torch.LongTensor([self.users.loc[user_id, 'job_id']]),  # 新增job_id
-            'city_id': torch.LongTensor([self.users.loc[user_id, 'city_id']] * self.neg_ratio),
-            # 'age_bucket': torch.LongTensor([self.users.loc[user_id, 'age_bucket']] * (1 + self.neg_ratio)),
+            'job_id': torch.LongTensor([self.users.loc[user_id, 'job_id']] * (1 + self.neg_ratio)),  # 统一扩展
+            'city_id': torch.LongTensor([self.users.loc[user_id, 'city_id']] * (1 + self.neg_ratio)),  # 统一扩展
             'age_bucket': torch.LongTensor([age_bucket] * (1 + self.neg_ratio)),
-            # 'label_list': [self.users.loc[user_id, 'label_list']] * (1 + self.neg_ratio),  # 保持为列表
-            'label_list': torch.LongTensor(self.users.loc[user_id, 'label_list']),  # 关键修改：转为Tensor
-            'label_length': torch.LongTensor([len(self.users.loc[user_id, 'label_list'])] * (1 + self.neg_ratio)) # 动态平均池化
+            'label_list': torch.LongTensor(self.users.loc[user_id, 'label_list']),  # 原始标签序列
+            'label_length': torch.LongTensor([len(self.users.loc[user_id, 'label_list'])] * (1 + self.neg_ratio))
         }
 
         item_data = {
-            'item_id': torch.LongTensor(batch_item),
+            'item_id': torch.LongTensor(batch_item),  # 形状 [1+neg_ratio]
             'category_id': torch.LongTensor([self.items.loc[i, 'category_id'] for i in batch_item]),
-            # 'label_list': [self.items.loc[i, 'label_list'] for i in batch_item],  # 保持为列表
             'city_id': torch.LongTensor([self.items.loc[i, 'city_id'] for i in batch_item]),
-            'label_list': torch.LongTensor(self.items.loc[item_id, 'label_list']),  # 关键修改：转为Tensor
-            'label_length': torch.LongTensor([len(self.items.loc[i, 'label_list']) for i in batch_item]) # 动态平均池化
+            'label_list': torch.stack([torch.LongTensor(self.items.loc[i, 'label_list']) for i in batch_item]),  # 堆叠成张量
+            'label_length': torch.LongTensor([len(self.items.loc[i, 'label_list']) for i in batch_item])
         }
 
+        print("负采样")
+        print("user_data:", user_data)
+        print("item_data:", item_data)
         return user_data, item_data, torch.FloatTensor(batch_label)

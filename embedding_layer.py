@@ -64,6 +64,17 @@ class RecommenderModel(nn.Module):
         self.label_embed = nn.Embedding(label_vocab_size, 32)  # 标签Embedding层
         self.dynamic_pool = DynamicWeightedAverage(32)  # 动态池化层
 
+        print('user_id_emb', self.user_id_emb.weight.shape)
+        print('gender_emb', self.gender_emb.weight.shape)
+        print('job_emb', self.job_emb.weight.shape)
+        print('city_emb', self.city_emb.weight.shape)
+        print('age_emb', self.age_emb.weight.shape)
+        print('item_id_emb', self.item_id_emb.weight.shape)
+        print('category_emb', self.category_emb.weight.shape)
+        print('label_embed', self.label_emb.weight.shape)
+        print('dynamic_pool', self.dynamic_pool.weight.shape)
+
+
         # 用户塔和物品塔
         self.user_tower = nn.Sequential(
             nn.Linear(64 + 16 * 3 + 16 + 32, 256),
@@ -84,11 +95,24 @@ class RecommenderModel(nn.Module):
         # assert (user_data['job_id'] < self.job_emb.num_embeddings).all(), "job_id超出embedding范围"
 
 
+
+
+
+        # print('current_age', user_data['age'])
+
+        # print('current_label', user_data['label'])
+        # print('current_dynamic_pool', self.dynamic_pool.weight.shape)
+
         # 用户特征处理
+        print('current_user_id', user_data['user_id'])
         u_id = self.user_id_emb(user_data['user_id'])
+        print('current_gender', user_data['gender'])
         u_gender = self.gender_emb(user_data['gender_id'])
+        print('current_job', user_data['job'])
         u_job = self.job_emb(user_data['job_id'])
+        print('current_city', user_data['city'])
         u_city = self.city_emb(user_data['city_id'])
+        print('current_age', user_data['age_bucket'])
         u_age = self.age_emb(user_data['age_bucket'])
         # u_labels = self.label_emb(user_data['label_list'])
         user_labels = torch.cat([torch.LongTensor(x).to(device) for x in user_data['label_list']])
@@ -97,8 +121,11 @@ class RecommenderModel(nn.Module):
         u_labels_pooled = self.dynamic_pool(user_label_emb, user_data['label_length'])
 
         # 物品特征处理
+        print('current_item', user_data['item_id'])
         i_id = self.item_id_emb(item_data['item_id'])
+        print('current_category', item_data['category_id'])
         i_category = self.category_emb(item_data['category_id'])
+        print('current_item_city', item_data['city_id'])
         i_city = self.city_emb(item_data['city_id'])  # 复用用户city embedding
         # i_labels = self.label_emb(item_data['label_list'])
         # 物品侧动态池化（同理）
