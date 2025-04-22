@@ -47,6 +47,7 @@ class RecDatasetWithNegative(Dataset):
             batch_label.append(0.0)  # 负样本权重为0
 
         # 安全处理age_bucket
+        self.users['age_bucket'] = self.users['age_bucket'].fillna(-1).astype(int)
         age_bucket = int(self.users.loc[user_id, 'age_bucket'])
         if not -2147483648 <= age_bucket <= 2147483647:  # int32范围
             age_bucket = 0  # 设置默认值
