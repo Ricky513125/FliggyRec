@@ -9,6 +9,35 @@ from RecDatasetWithNegative import RecDatasetWithNegative
 import os
 from tqdm import tqdm  # 导入进度条库
 
+
+def dynamic_collate_fn(batch):
+    """支持变长标签且自动处理设备转移的collate函数"""
+    # 分离用户、物品、标签数据
+    user_batch, item_batch, labels = zip(*batch)
+
+    # 自动获取当前设备（与模型相同的设备）
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+    # 处理用户数据
+    user_data = {
+        'user_id': torch.cat([x['user_id'] for x in user_batch]).to(device),
+        'gender_id': torch.cat([x['gender_id'] for x in user_batch]).to(device),
+        'age_bucket': torch.cat([x['age_bucket'] for x in user_batch]).to(device),
+        'label_list': [label.to(device) for x in user_batch for label in x['label_list']],  # 展平+设备转移
+        'label_length': torch.cat([x['label_length'] for x in user_batch]).to(device)
+    }
+
+    # 处理物品数据
+    item_data = {
+        'item_id': torch.cat([x['item_id'] for x in item_batch]).to(device),
+        'category_id': torch.cat([x['category_id'] for x in item_batch]).to(device),
+        'label_list': [label.to(device) for x in item_batch for label in x['label_list']],
+        'label_length': torch.cat([x['label_length'] for x in item_batch]).to(device)
+    }
+
+    return user_data, item_data, torch.cat(labels).to(device).float()
+
+
 # 设备设置
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -62,7 +91,7 @@ optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
 # 数据加载（带负采样）
 dataset = RecDatasetWithNegative(users, items, interactions, neg_ratio=3)
-dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+dataloader = DataLoader(dataset, batch_size=64, shuffle=True, collate_fn=dynamic_collate_fn) # 关键：使用自定义collate函数)
 # 在创建dataloader后添加检查
 print(f"Dataset length: {len(dataset)}")  # 应该输出正样本数 × (1 + neg_ratio)
 print(f"Batch数量: {len(dataloader)}")  # 应该输出ceil(数据集长度/batch_size)
@@ -107,21 +136,21 @@ def train_epoch(model, dataloader, optimizer, device):
     for user_data, item_data, labels in dataloader:
         # ----------------- 修正3：正确的设备转移 -----------------
         # 处理用户数据
+        # 修改后的数据转移逻辑
         user_batch = {
             'user_id': user_data['user_id'].to(device),
             'gender_id': user_data['gender_id'].to(device),
             'age_bucket': user_data['age_bucket'].to(device),
-            'label_list': user_data['label_list']  # 列表类型不转移设备
+            'label_list': [x.to(device) for x in user_data['label_list']]  # 提前转移标签列表
         }
 
-        # 处理物品数据
         item_batch = {
             'item_id': item_data['item_id'].to(device),
             'category_id': item_data['category_id'].to(device),
-            'label_list': item_data['label_list']  # 列表类型不转移设备
+            'label_list': [x.to(device) for x in item_data['label_list']]  # 提前转移标签列表
         }
 
-        labels = labels.to(device).float()  # 确保标签是浮点型
+        labels = labels.to(device).float()
 
         # 梯度清零
         optimizer.zero_grad()
