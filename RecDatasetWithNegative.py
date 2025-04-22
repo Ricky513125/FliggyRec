@@ -46,11 +46,17 @@ class RecDatasetWithNegative(Dataset):
             batch_item.append(item_id)
             batch_label.append(0.0)  # 负样本权重为0
 
+        # 安全处理age_bucket
+        age_bucket = int(self.users.loc[user_id, 'age_bucket'])
+        if not -2147483648 <= age_bucket <= 2147483647:  # int32范围
+            age_bucket = 0  # 设置默认值
+
         # 组装数据
         user_data = {
             'user_id': torch.LongTensor(batch_user),
             'gender_id': torch.LongTensor([self.users.loc[user_id, 'gender_id']] * (1 + self.neg_ratio)),
-            'age_bucket': torch.LongTensor([self.users.loc[user_id, 'age_bucket']] * (1 + self.neg_ratio)),
+            # 'age_bucket': torch.LongTensor([self.users.loc[user_id, 'age_bucket']] * (1 + self.neg_ratio)),
+            'age_bucket': torch.LongTensor([age_bucket] * (1 + self.neg_ratio)),
             'label_list': [self.users.loc[user_id, 'label_list']] * (1 + self.neg_ratio)
         }
 
