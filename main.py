@@ -148,6 +148,7 @@ def train_epoch(model, dataloader, optimizer, device):
         user_batch = {
             'user_id': user_data['user_id'].to(device),
             'gender_id': user_data['gender_id'].to(device),
+            'job_id': user_data['job_id'].to(device),
             'age_bucket': user_data['age_bucket'].to(device),
             'label_list': [x.to(device) for x in user_data['label_list']]  # 提前转移标签列表
         }
