@@ -63,7 +63,9 @@ optimizer = optim.Adam(model.parameters(), lr=1e-3)
 # 数据加载（带负采样）
 dataset = RecDatasetWithNegative(users, items, interactions, neg_ratio=3)
 dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
-
+# 在创建dataloader后添加检查
+print(f"Dataset length: {len(dataset)}")  # 应该输出正样本数 × (1 + neg_ratio)
+print(f"Batch数量: {len(dataloader)}")  # 应该输出ceil(数据集长度/batch_size)
 # ----------------- 修正1：独立损失函数 -----------------
 def weighted_bce_loss(outputs, targets, weights=None):
     """

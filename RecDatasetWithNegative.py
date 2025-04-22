@@ -8,6 +8,10 @@ class RecDatasetWithNegative(Dataset):
         self.all_item_ids = items['item_id'].unique()
         self.neg_ratio = neg_ratio
 
+    def __len__(self):
+        """返回数据集的总长度（正样本数 × (1 + 负样本比例)）"""
+        return len(self.interactions) * (1 + self.neg_ratio)
+
     def __getitem__(self, idx):
         # 正样本
         pos_row = self.interactions.iloc[idx]
