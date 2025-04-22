@@ -1,5 +1,6 @@
 from torch.utils.data import Dataset, DataLoader
-
+import numpy as np
+import torch
 class RecDatasetWithNegative(Dataset):
     def __init__(self, users, items, interactions, neg_ratio=3):
         self.users = users.set_index('user_id')
