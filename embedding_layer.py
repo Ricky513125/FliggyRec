@@ -91,8 +91,8 @@ class RecommenderModel(nn.Module):
         u_city = self.city_emb(user_data['city_id'])
         u_age = self.age_emb(user_data['age_bucket'])
         # u_labels = self.label_emb(user_data['label_list'])
-        # user_labels = torch.cat([torch.LongTensor(x).to(device) for x in user_data['label_list']])
-        user_labels = user_data['label_list']  # 已经是拼接好的Tensor
+        user_labels = torch.cat([torch.LongTensor(x).to(device) for x in user_data['label_list']])
+        # user_labels = user_data['label_list']  # 已经是拼接好的Tensor
         user_label_emb = self.label_embed(user_labels)
         u_labels_pooled = self.dynamic_pool(user_label_emb, user_data['label_length'])
 
