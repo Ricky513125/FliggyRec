@@ -18,3 +18,7 @@ interactions = history.groupby(['user_id', 'item_id'])['action_id'].apply(
 
 # 归一化权重到[0,1]范围（可选）
 interactions['label'] = interactions['weight'] / max(ACTION_WEIGHTS.values())
+
+interactions.to_csv('data/interactions.csv', index=False)
+print("Succefully saved interactions")
+print(interactions.head(10))
