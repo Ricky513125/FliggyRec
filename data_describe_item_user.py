@@ -4,7 +4,7 @@ import numpy as np
 # get_Data
 users = pd.read_csv('data/user_profile.csv', header=None, names=['user_id', 'age', 'gender_id', 'job_id', 'city_id', 'label'])
 items = pd.read_csv('data/item_profile.csv', header=None, names=['item_id', 'category_id', 'city_id', 'label'])
-# interactions = pd.read_csv('data/interactions.csv')
+interactions = pd.read_csv('data/interactions.csv')
 
 
 def get_column_stats(df, name):
@@ -17,7 +17,8 @@ def get_column_stats(df, name):
                 'unique_count': split_values.nunique(),
                 'sample_values': split_values.value_counts().head(3).index.tolist(),
                 'min_value': split_values.min(),
-                'max_value': split_values.max()
+                'max_value': split_values.max(),
+                'type': split_values.dtype
             }
         else:
             # 普通列处理
@@ -33,5 +34,6 @@ def get_column_stats(df, name):
 # 生成报告
 user_stats = get_column_stats(users, 'users')
 item_stats = get_column_stats(items, 'items')
+interaction_stats = get_column_stats(interactions, 'interactions')
 
-print(pd.concat([user_stats, item_stats], axis=0))
+print(pd.concat([user_stats, item_stats, interaction_stats], axis=0))
