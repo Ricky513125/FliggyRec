@@ -104,6 +104,7 @@ class RecommenderModel(nn.Module):
         # print('current_dynamic_pool', self.dynamic_pool.weight.shape)
 
         # 用户特征处理
+        print('user_data', user_data)
         print('current_user_id', user_data['user_id'])
         u_id = self.user_id_emb(user_data['user_id'])
         print('current_gender', user_data['gender_id'])
