@@ -48,6 +48,19 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 users = pd.read_csv('data/user_profile.csv', header=None, names=['user_id', 'age', 'gender_id', 'job_id', 'city_id', 'label'])
 items = pd.read_csv('data/item_profile.csv', header=None, names=['item_id', 'category_id', 'city_id', 'label'])
 interactions = pd.read_csv('data/interactions.csv')
+users['user_id'] = users['user_id'].astype(int)  # 确保是整数
+users['age'] = users['age'].astype(int)
+users['gender_id'] = users['gender_id'].astype(int)
+users['job_id'] = users['job_id'].astype(int)
+users['city_id'] = users['city_id'].astype(int)
+users['gender_id'] = users['gender_id'].astype(int)
+items['item_id'] = items['item_id'].astype(int)
+items['category_id'] = items['category_id'].astype(int)
+items['city_id'] = items['city_id'].astype(int)
+interactions['item_id'] = interactions['item_id'].astype(int)
+interactions['category_id'] = interactions['category_id'].astype(int)
+
+
 
 print("用户数据列：", users.columns.tolist())  # 必须包含job_id
 assert 'job_id' in users.columns, "原始数据缺少job_id列"

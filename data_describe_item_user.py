@@ -26,7 +26,8 @@ def get_column_stats(df, name):
                 'unique_count': df[col].nunique(),
                 'sample_values': df[col].value_counts().head(3).index.tolist(),
                 'min_value': df[col].min(),
-                'max_value': df[col].max()
+                'max_value': df[col].max(),
+                'type': df[col].dtype
             }
     return pd.DataFrame.from_dict(stats, orient='index',
                                  columns=['unique_count', 'sample_values', 'min_value', 'max_value']).rename_axis(name)
@@ -34,6 +35,7 @@ def get_column_stats(df, name):
 # 生成报告
 user_stats = get_column_stats(users, 'users')
 item_stats = get_column_stats(items, 'items')
+
 interaction_stats = get_column_stats(interactions, 'interactions')
 
 print(pd.concat([user_stats, item_stats, interaction_stats], axis=0))
