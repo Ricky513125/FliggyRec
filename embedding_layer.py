@@ -64,15 +64,15 @@ class RecommenderModel(nn.Module):
         self.label_embed = nn.Embedding(label_vocab_size, 32)  # 标签Embedding层
         self.dynamic_pool = DynamicWeightedAverage(32)  # 动态池化层
 
-        print('user_id_emb', self.user_id_emb.weight.shape)
-        print('gender_emb', self.gender_emb.weight.shape)
-        print('job_emb', self.job_emb.weight.shape)
-        print('city_emb', self.city_emb.weight.shape)
-        print('age_emb', self.age_emb.weight.shape)
-        print('item_id_emb', self.item_id_emb.weight.shape)
-        print('category_emb', self.category_emb.weight.shape)
-        print('label_embed', self.label_embed.weight.shape)
-        print('dynamic_pool', self.dynamic_pool.weight.shape)
+        # print('user_id_emb', self.user_id_emb.weight.shape)
+        # print('gender_emb', self.gender_emb.weight.shape)
+        # print('job_emb', self.job_emb.weight.shape)
+        # print('city_emb', self.city_emb.weight.shape)
+        # print('age_emb', self.age_emb.weight.shape)
+        # print('item_id_emb', self.item_id_emb.weight.shape)
+        # print('category_emb', self.category_emb.weight.shape)
+        # print('label_embed', self.label_embed.weight.shape)
+        # print('dynamic_pool', self.dynamic_pool.weight.shape)
 
 
         # 用户塔和物品塔
