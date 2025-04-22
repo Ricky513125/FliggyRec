@@ -88,8 +88,10 @@ class RecommenderModel(nn.Module):
 
     def forward(self, user_data, item_data):
         print('user_data', user_data)
-        print('item_data', item_data)
-        assert 1 == 0
+        print('shape', user_data.shape)
+        print('user_data.keys()', user_data.keys())
+        # print('item_data', item_data)
+        assert 1 ==0
         # job_id 验证
         # 在模型forward开头添加
         # print("job_id取值范围：", user_data['job_id'].min(), user_data['job_id'].max())
