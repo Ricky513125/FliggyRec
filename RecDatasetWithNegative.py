@@ -26,15 +26,15 @@ class RecDatasetWithNegative(Dataset):
         job_id = self.users.loc[user_id, 'job_id']
         if job_id == -1:
             job_id = self.job_emb_num - 1  # 映射到最后一维
-        else:
-            job_id += 1  # 原始ID整体偏移（避免与 -1 冲突）
+        # else:
+        #     job_id += 1  # 原始ID整体偏移（避免与 -1 冲突）
 
         # 处理 city_id（同理）
         city_id = self.users.loc[user_id, 'city_id']
         if city_id == -1:
             city_id = self.city_emb_num - 1
-        else:
-            city_id += 1
+        # else:
+        #     city_id += 1
 
         # 负采样（确保不在用户历史中）
         user_items = set(self.interactions[self.interactions['user_id'] == user_id]['item_id'])
