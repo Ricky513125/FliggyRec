@@ -22,8 +22,8 @@ def dynamic_collate_fn(batch):
     user_data = {
         'user_id': torch.cat([x['user_id'] for x in user_batch]).to(device),
         'gender_id': torch.cat([x['gender_id'] for x in user_batch]).to(device),
-        'job_id': torch.cat([x['job_id'] for x in user_batch]).to(device).to(device),  # 新增
-        'city_id': torch.cat([x['city_id'] for x in user_batch]).to(device).to(device),
+        'job_id': torch.cat([x['job_id'] for x in user_batch]).to(device),  # 新增
+        'city_id': torch.cat([x['city_id'] for x in user_batch]).to(device),
         'age_bucket': torch.cat([x['age_bucket'] for x in user_batch]).to(device),
         # 'label_list': [label.to(device) for x in user_batch for label in x['label_list']],  # 展平+设备转移
         'label_list': torch.cat([x['label_list'] for x in user_batch]).to(device),  # 直接concat
@@ -150,6 +150,7 @@ def train_epoch(model, dataloader, optimizer, device):
             'user_id': user_data['user_id'].to(device),
             'gender_id': user_data['gender_id'].to(device),
             'job_id': user_data['job_id'].to(device),
+            'city_id': user_data['city_id'].to(device),
             'age_bucket': user_data['age_bucket'].to(device),
             'label_list': [x.to(device) for x in user_data['label_list']]  # 提前转移标签列表
         }
