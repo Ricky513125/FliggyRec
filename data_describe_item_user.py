@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 
 # get_Data
-users = pd.read_csv("/data/user_profile.csv")
-items = pd.read_csv("/data/item_profile.csv")
+users = pd.read_csv("data/user_profile.csv")
+items = pd.read_csv("data/item_profile.csv")
 
 
 def get_column_stats(df, name):
