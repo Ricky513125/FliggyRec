@@ -17,7 +17,8 @@ def dynamic_collate_fn(batch):
 
     # 自动获取当前设备（与模型相同的设备）
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+    print("user_batch中的字段名：", user_batch[0].keys())
+    print("item_batch中的字段",item_batch[0].keys())
     # 处理用户数据
     user_data = {
         'user_id': torch.cat([x['user_id'] for x in user_batch]).to(device),
