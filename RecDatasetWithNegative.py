@@ -109,7 +109,7 @@ class RecDatasetWithNegative(Dataset):
             'label_length': torch.LongTensor([len(self.items.loc[i, 'label_list']) for i in batch_item])
         }
 
-        print("负采样")
-        print("user_data:", user_data)
-        print("item_data:", item_data)
+        # print("负采样")
+        # print("user_data:", user_data)
+        # print("item_data:", item_data)
         return user_data, item_data, torch.FloatTensor(batch_label)
