@@ -84,6 +84,7 @@ class RecDatasetWithNegative(Dataset):
             'item_id': torch.LongTensor(batch_item),
             'category_id': torch.LongTensor([self.items.loc[i, 'category_id'] for i in batch_item]),
             # 'label_list': [self.items.loc[i, 'label_list'] for i in batch_item],  # 保持为列表
+            'city_id': torch.LongTensor([self.items.loc[i, 'city_id'] for i in batch_item]),
             'label_list': torch.LongTensor(self.items.loc[item_id, 'label_list']),  # 关键修改：转为Tensor
             'label_length': torch.LongTensor([len(self.items.loc[i, 'label_list']) for i in batch_item]) # 动态平均池化
         }

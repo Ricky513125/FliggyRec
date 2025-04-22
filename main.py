@@ -35,6 +35,7 @@ def dynamic_collate_fn(batch):
         'item_id': torch.cat([x['item_id'] for x in item_batch]).to(device),
         'category_id': torch.cat([x['category_id'] for x in item_batch]).to(device),
         # 'label_list': [label.to(device) for x in item_batch for label in x['label_list']],
+        'city_id': torch.cat([x['city_id'] for x in item_batch]).to(device),
         'label_list': torch.cat([x['label_list'] for x in item_batch]).to(device),
         'label_length': torch.cat([x['label_length'] for x in item_batch]).to(device)
     }
@@ -94,13 +95,14 @@ user_feat_sizes = {
     'user_id': users['user_id'].max() + 1,
     'gender_id': users['gender_id'].max() + 1,
     'job_id': users['job_id'].max() + 2,
-    'city_id': users['city_id'].max() + 2
+    'city_id': max(users['city_id'].max(), items['city_id'].max()) + 2
 }
 # 检查特征词典
 print("user_feat_sizes内容：", user_feat_sizes)  # 必须包含job_id
 item_feat_sizes = {
     'item_id': items['item_id'].max() + 1,
-    'category_id': items['category_id'].max() + 1
+    'category_id': items['category_id'].max() + 1,
+    # 'city_id': max(users['city_id'].max(), items['city_id'].max()) + 2
 }
 
 
@@ -171,6 +173,7 @@ def train_epoch(model, dataloader, optimizer, device):
         item_batch = {
             'item_id': item_data['item_id'].to(device),
             'category_id': item_data['category_id'].to(device),
+            'city_id': item_data['city_id'].to(device),
             'label_list': [x.to(device) for x in item_data['label_list']]  # 提前转移标签列表
         }
 
