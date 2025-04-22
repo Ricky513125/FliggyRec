@@ -104,7 +104,8 @@ class RecDatasetWithNegative(Dataset):
             'item_id': torch.LongTensor(batch_item),  # 形状 [1+neg_ratio]
             'category_id': torch.LongTensor([self.items.loc[i, 'category_id'] for i in batch_item]),
             'city_id': torch.LongTensor([self.items.loc[i, 'city_id'] for i in batch_item]),
-            'label_list': torch.stack([torch.LongTensor(self.items.loc[i, 'label_list']) for i in batch_item]),  # 堆叠成张量
+            # 'label_list': torch.stack([torch.LongTensor(self.items.loc[i, 'label_list']) for i in batch_item]),  # 堆叠成张量
+            'label_list': torch.cat([torch.LongTensor(self.items.loc[i, 'label_list']) for i in batch_item]),  # 展平拼接
             'label_length': torch.LongTensor([len(self.items.loc[i, 'label_list']) for i in batch_item])
         }
 
