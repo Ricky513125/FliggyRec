@@ -44,6 +44,8 @@ class MultiLabelEmbedding(nn.Module):
 class RecommenderModel(nn.Module):
     def __init__(self, user_feat_sizes, item_feat_sizes, label_vocab_size):
         super().__init__()
+        # 确保user_feat_sizes包含job_id
+        assert 'job_id' in user_feat_sizes, "user_feat_sizes必须包含job_id"
         # 用户侧Embedding
         self.user_id_emb = nn.Embedding(user_feat_sizes['user_id'], 64)
         self.gender_emb = nn.Embedding(user_feat_sizes['gender_id'], 16)

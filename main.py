@@ -22,6 +22,7 @@ def dynamic_collate_fn(batch):
     user_data = {
         'user_id': torch.cat([x['user_id'] for x in user_batch]).to(device),
         'gender_id': torch.cat([x['gender_id'] for x in user_batch]).to(device),
+        'job_id': torch.cat([x['job_id'] for x in user_batch]).to(device),  # 新增
         'age_bucket': torch.cat([x['age_bucket'] for x in user_batch]).to(device),
         # 'label_list': [label.to(device) for x in user_batch for label in x['label_list']],  # 展平+设备转移
         'label_list': torch.cat([x['label_list'] for x in user_batch]).to(device),  # 直接concat
