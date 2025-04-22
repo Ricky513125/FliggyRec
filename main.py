@@ -48,6 +48,9 @@ users = pd.read_csv('data/user_profile.csv', header=None, names=['user_id', 'age
 items = pd.read_csv('data/item_profile.csv', header=None, names=['item_id', 'category_id', 'city_id', 'label'])
 interactions = pd.read_csv('data/interactions.csv')
 
+print("用户数据列：", users.columns.tolist())  # 必须包含job_id
+assert 'job_id' in users.columns, "原始数据缺少job_id列"
+
 ACTION_WEIGHTS = {
     'clk': 1.0,  # 点击
     'fav': 2.0,  # 收藏
@@ -79,6 +82,8 @@ user_feat_sizes = {
     'job_id': users['job_id'].max() + 1,
     'city_id': users['city_id'].max() + 1
 }
+# 检查特征词典
+print("user_feat_sizes内容：", user_feat_sizes)  # 必须包含job_id
 item_feat_sizes = {
     'item_id': items['item_id'].max() + 1,
     'category_id': items['category_id'].max() + 1

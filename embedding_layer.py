@@ -76,6 +76,14 @@ class RecommenderModel(nn.Module):
         )
 
     def forward(self, user_data, item_data):
+
+        # job_id 验证
+        # 在模型forward开头添加
+        print("job_id取值范围：", user_data['job_id'].min(), user_data['job_id'].max())
+        assert (user_data['job_id'] >= 0).all(), "存在负值job_id"
+        assert (user_data['job_id'] < self.job_emb.num_embeddings).all(), "job_id超出embedding范围"
+
+
         # 用户特征处理
         u_id = self.user_id_emb(user_data['user_id'])
         u_gender = self.gender_emb(user_data['gender_id'])
