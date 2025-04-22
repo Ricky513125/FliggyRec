@@ -8,6 +8,8 @@ class RecDatasetWithNegative(Dataset):
         self.interactions = interactions
         self.all_item_ids = items['item_id'].unique()
         self.neg_ratio = neg_ratio
+        self.job_emb_num = users['job_id'].max() + 2  # 原始最大值+1 +1（为-1）
+        self.city_emb_num = users['city_id'].max() + 2
 
     def __len__(self):
         """返回数据集的总长度（正样本数 × (1 + 负样本比例)）"""
@@ -19,6 +21,20 @@ class RecDatasetWithNegative(Dataset):
         # pos_idx = idx // (1 + self.neg_ratio)
         pos_row = self.interactions.iloc[idx]
         user_id = pos_row['user_id']
+
+        # 处理 job_id
+        job_id = self.users.loc[user_id, 'job_id']
+        if job_id == -1:
+            job_id = self.job_emb_num - 1  # 映射到最后一维
+        else:
+            job_id += 1  # 原始ID整体偏移（避免与 -1 冲突）
+
+        # 处理 city_id（同理）
+        city_id = self.users.loc[user_id, 'city_id']
+        if city_id == -1:
+            city_id = self.city_emb_num - 1
+        else:
+            city_id += 1
 
         # 负采样（确保不在用户历史中）
         user_items = set(self.interactions[self.interactions['user_id'] == user_id]['item_id'])

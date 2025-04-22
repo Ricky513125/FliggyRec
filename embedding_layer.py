@@ -49,8 +49,8 @@ class RecommenderModel(nn.Module):
         # 用户侧Embedding
         self.user_id_emb = nn.Embedding(user_feat_sizes['user_id'], 64)
         self.gender_emb = nn.Embedding(user_feat_sizes['gender_id'], 16)
-        self.job_emb = nn.Embedding(user_feat_sizes['job_id'], 16)
-        self.city_emb = nn.Embedding(user_feat_sizes['city_id'], 16)
+        self.job_emb = nn.Embedding(user_feat_sizes['job_id']+1, 16)
+        self.city_emb = nn.Embedding(user_feat_sizes['city_id']+1, 16)
         self.age_emb = nn.Embedding(10, 16)  # 假设年龄分10个桶
 
         # 物品侧Embedding

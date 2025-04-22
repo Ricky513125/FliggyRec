@@ -79,8 +79,8 @@ label_vocab_size = len(all_labels) + 1  # +1 for padding index
 user_feat_sizes = {
     'user_id': users['user_id'].max() + 1,
     'gender_id': users['gender_id'].max() + 1,
-    'job_id': users['job_id'].max() + 1,
-    'city_id': users['city_id'].max() + 1
+    'job_id': users['job_id'].max() + 2,
+    'city_id': users['city_id'].max() + 2
 }
 # 检查特征词典
 print("user_feat_sizes内容：", user_feat_sizes)  # 必须包含job_id
